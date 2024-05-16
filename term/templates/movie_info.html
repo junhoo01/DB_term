@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie_Info</title>
+</head>
+<body>
+<h2> {{movie_name}}</h2>
+<div style="position: fixed; top: 20px; right: 20px;">
+<small>User ID: {{ user_id }}</small>
+    <form action="{{ url_for('main', user_id=user_id) }}" method="post">
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        <input type="hidden" name="sort_by_r" value="rev_time desc">
+        <input type="hidden" name="sort_by_m" value="rel_date desc">
+        <button>mainpage</button>
+    </form>
+</div>
+<table border="1">
+    <thead>
+        <tr>
+            <th>director</th>
+            <th>genre</th>
+            <th>release date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for movie in movie_info %}
+            <tr>
+                <td>{{ movie[0] }}</td>
+                <td>{{ movie[1] }}</td>
+                <td>{{ movie[2] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<hr>
+<h2> Reviews </h2>
+<h3> Average Rating:  {{avg_rating}}</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ratings</th>
+            <th>user</th>
+            <th>review</th>
+            <th>time</th>
+            <th>like</th>
+            <th>dislike</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for review in review_info %}
+        <tr>
+            <td>{{ review[0] }}</td>
+            <td bgcolor="#FFCCCC" ><a href="/user_info?user_id={{ review[1] }}&user2_id={{user_id}}">{{ review[1] }}</a></td>
+            <td>{{ review[2] }}</td>
+            <td>{{ review[3] }}</td>
+            <td>
+                <form action="/like" method="post">
+                    <input type="hidden" name="user2_id" value="{{ user_id }}">
+                    <input type="hidden" name="user_id" value="{{ review[1] }}">
+                    <input type="hidden" name="movie_id" value="{{ movie_id }}">
+                    <button type="submit">{{ review[4] }}</button>
+                </form>
+            </td>
+            <td>
+                <form action="/dislike" method="post">
+                    <input type="hidden" name="user2_id" value="{{ user_id }}">
+                    <input type="hidden" name="user_id" value="{{ review[1] }}">
+                    <input type="hidden" name="movie_id" value="{{ movie_id }}">
+                    <button type="submit">{{ review[5] }}</button>
+                </form>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<hr>
+        <form action="/new_review" method="post">
+            <div>
+                <input type="hidden" name="user_id" value="{{ user_id }}">
+                <input type="hidden" name="movie_id" value="{{ movie_id }}">
+                <label for="rating">My Review:</label>
+                <select id="rating" name="rating" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <br>
+            <textarea name="review" required rows="6" cols="100"></textarea><br>
+
+            <button type="submit">submit</button>
+        </form>
+</body>
+</html>

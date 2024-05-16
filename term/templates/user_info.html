@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User_Info</title>
+</head>
+<body>
+<h2> {{user_id}}</h2>
+{%if user_id != user2_id %}
+{% if user_id !='admin'%}
+
+    <form action="/mute" method="post">
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        <input type="hidden" name="user2_id" value="{{ user2_id }}">
+        <button type="submit" >Mute</button>
+    </form>
+{% endif %}
+    <form action="/follow" method="post">
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        <input type="hidden" name="user2_id" value="{{ user2_id }}">
+        <button type="submit" >Follow</button>
+    </form>
+{% endif %}
+
+<div style="position: fixed; top: 20px; right: 20px;">
+<small>User ID: {{ user2_id }}</small>
+        <form action="{{ url_for('main', user_id=user2_id) }}" method="post">
+            <input type="hidden" name="user_id" value="{{ user2_id }}">
+            <input type="hidden" name="sort_by_r" value="rev_time desc">
+            <input type="hidden" name="sort_by_m" value="rel_date desc">
+            <button>mainpage</button>
+        </form>
+</div>
+<h3> [Reviews] </h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ratings</th>
+            <th>movie</th>
+            <th>review</th>
+            <th>time</th>
+            <th>like</th>
+            <th>dislike</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review[0] }}</td>
+            <td bgcolor="#00FF00"><a href="/movie_info?movie_id={{ review[1] }}&user_id={{user2_id}}">{{ review[1] }}</a></td>
+            <td>{{ review[2] }}</td>
+            <td>{{ review[3] }}</td>
+            <td>
+                <form action="/like" method="post">
+                    <input type="hidden" name="user2_id" value="{{ user2_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <input type="hidden" name="movie_id" value="{{ review[6] }}">
+                    <button type="submit">{{ review[4] }}</button>
+                </form>
+            </td>
+            <td>
+                <form action="/dislike" method="post">
+                    <input type="hidden" name="user2_id" value="{{ user2_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <input type="hidden" name="movie_id" value="{{ review[6] }}">
+                    <button type="submit">{{ review[5] }}</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<hr>
+<h2>[Followers]</h2>
+<table border="1">
+
+    <tbody>
+    {% for follower in followers %}
+    <tr>
+        <td bgcolor="#FFCCCC"><a href="/user_info?user_id={{ follower[0] }}&user2_id={{user2_id}}">{{ follower[0] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<br>
+<hr>
+{%if user_id == user2_id %}
+    {% if role =='user'%}
+
+        <h2>[Followed]</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>user</th>
+                    <th>relation</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for follow in followed %}
+                <tr>
+                    <td bgcolor="#FFCCCC"><a href="/user_info?user_id={{ follow[0] }}&user2_id={{user2_id}}">{{ follow[0] }}</td>
+                    <td>
+                        <form action="/undo" method="post">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="user2_id" value="{{ follow[0] }}">
+                            <button type="submit" >unfollow</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+        <h2>[Muted]</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>user</th>
+                    <th>relation</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for mute in muted %}
+                <tr>
+                    <td bgcolor="#FFCCCC"><a href="/user_info?user_id={{ mute[0] }}&user2_id={{user2_id}}">{{ mute[0] }}</td>
+                    <td>
+                        <form action="/undo" method="post">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="user2_id" value="{{ mute[0] }}">
+                            <button type="submit" >unmute</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else%}
+        <h2>[Add Movie]</h2>
+        <form action="/add_movie" method="post">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <input type="hidden" name="user2_id" value="{{ user2_id }}">
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title" required><br>
+            <label for="director">Director:</label><br>
+            <input type="text" id="director" name="director" required><br>
+            <label for="genre">Genre:</label><br>
+            <select id="genre" name="genre" required>
+                <option value="action">action</option>
+                <option value="comedy">comedy</option>
+                <option value="drama">drama</option>
+                <option value="fantasy">fantasy</option>
+                <option value="horror">horror</option>
+                <option value="mystery">mystery</option>
+                <option value="romance">romance</option>
+                <option value="thriller">thriller</option>
+                <option value="western">western</option>
+            </select><br>
+            <label for="rel_date">Release Date:</label><br>
+            <input type="date" id="rel_date" name="rel_date" required><br>
+            <button type="submit">Add</button>
+        </form>
+    {% endif %}
+{% endif %}
+</body>
+</html>

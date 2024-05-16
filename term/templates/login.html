@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>main</title>
+</head>
+<body>
+
+<form action="/register" method="post">
+    <label for="user_id">ID:</label><br>
+    <input id="user_id" type="text" name="id" value=""><br>
+
+    <label for="user_pwd">PASSWORD:</label><br>
+    <input id="user_pwd" type="password" name="password" value=""><br><br>
+
+    <input type="submit" name="send" value="login">
+    <input type="submit" name="send" value="sign up">
+</form>
+
+{% if invalid1 %}
+    <p style="color:red;">id와 비밀번호는 한글자 이상이어야 합니다.</p>
+{% endif %}
+
+{% if invalid2 %}
+    <p style="color:red;">이미 가입되어 있는 id입니다.</p>
+{% endif %}
+
+{% if login_fail %}
+    <p style="color:red;">가입되어 있지 않은 회원입니다. 가입부터 해주세요</p>
+{% endif %}
+
+</body>
+</html>
